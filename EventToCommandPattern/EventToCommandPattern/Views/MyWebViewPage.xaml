@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    x:Class="EventToCommandPattern.Views.MyWebViewPage"
+    xmlns:behaviors="clr-namespace:EventToCommandPattern.Behaviors; assembly=EventToCommandPattern"
+    xmlns:converters="clr-namespace:EventToCommandPattern.Converters; assembly=EventToCommandPattern"
+    >
+    <ContentPage.Resources>  
+            <ResourceDictionary>
+            <converters:WebNavigatingEventArgsConverter x:Key="WebNavigatingEventArgsConverter" />
+            <converters:WebNavigatedEventArgsConverter x:Key="WebNavigatedEventArgsConverter" />
+            </ResourceDictionary>
+   </ContentPage.Resources>
+   <ContentPage.Content>
+    <AbsoluteLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+
+        <StackLayout AbsoluteLayout.LayoutFlags="All" AbsoluteLayout.LayoutBounds="0,0,1,1" Orientation="Vertical">
+
+                <WebView  
+                  HorizontalOptions="FillAndExpand"   
+                  VerticalOptions="FillAndExpand"   
+
+                  Source="https://ups.com"
+                  AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                  AbsoluteLayout.LayoutFlags="All">
+                    <WebView.Behaviors>
+                        <OnPlatform x:TypeArguments="Behavior">
+                            <On Platform="iOS, Android">
+                                <On.Value>
+                                    <behaviors:EventToCommandBehavior 
+                                        EventName="Navigated"
+                                        EventArgsConverter="{StaticResource WebNavigatedEventArgsConverter}"
+                                        Command="{Binding NavigateCommand}"
+                                    />
+                                </On.Value>
+                            </On>
+                        </OnPlatform>
+                    </WebView.Behaviors>
+                </WebView>
+                </StackLayout>
+                 <StackLayout IsVisible="{Binding IsBusy}" Padding="12" 
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                AbsoluteLayout.LayoutBounds="0.5, 0.5, -1, -1">
+
+                <ActivityIndicator  IsEnabled="{Binding IsBusy}" IsRunning="{Binding IsBusy}" Color="Black"/>
+                <Label Text="Loading..." HorizontalOptions="Center" TextColor="Black"/>
+
+     </StackLayout>
+   </AbsoluteLayout>
+
+ </ContentPage.Content>
+
+</ContentPage>
